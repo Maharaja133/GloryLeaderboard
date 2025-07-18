@@ -1,0 +1,21 @@
+<svg width="300" height="100" viewBox="0 0 300 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <linearGradient id="trophyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+    <stop offset="0%" stop-color="#F59E0B" />
+    <stop offset="100%" stop-color="#B45309" />
+  </linearGradient>
+  
+  <path d="M30 40V20H50V10H40V0H60V10H50V20H70V40C70 40 65 50 50 50C35 50 30 40 30 40Z" fill="url(#trophyGradient)"/>
+  <path d="M40 50V60H60V50" stroke="#92400E" stroke-width="2"/>
+  
+  <linearGradient id="textGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+    <stop offset="0%" stop-color="#2563EB" />
+    <stop offset="100%" stop-color="#7C3AED" />
+  </linearGradient>
+  
+  <text x="90" y="45" font-family="Arial" font-size="36" font-weight="bold" fill="url(#textGradient)">
+    Glory Leaderboard
+  </text>
+  
+  <path d="M120 15L123 22L130 22L125 27L127 34L120 30L113 34L115 27L110 22L117 22L120 15Z" fill="#FBBF24"/>
+  <path d="M160 10L162 15L167 15L163 18L165 23L160 20L155 23L157 18L153 15L158 15L160 10Z" fill="#FBBF24"/>
+</svg>
