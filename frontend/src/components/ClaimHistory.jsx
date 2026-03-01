@@ -1,39 +1,10 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import { toast } from 'react-toastify';
+import { useState } from 'react';
 
-export default function ClaimHistory() {
-  const [history, setHistory] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+export default function ClaimHistory({ history = [], isLoading = false }) {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
-  useEffect(() => {
-    const fetchHistory = async () => {
-      try {
-        setIsLoading(true);
-        const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-        const res = await axios.post(`${API_URL}/api/claim/${selectedUser}`);
-        setHistory(res.data);
-      } catch (err) {
-        console.error('Failed to fetch history:', err);
-        toast.error('Failed to load claim history', {
-          position: "top-center",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchHistory();
-  }, []);
-
-  const totalPages = Math.ceil(history.length / itemsPerPage);
+  const totalPages = Math.max(1, Math.ceil(history.length / itemsPerPage));
   const paginatedHistory = history.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
@@ -78,10 +49,10 @@ export default function ClaimHistory() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center">
                       <div className="flex-shrink-0 h-10 w-10 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full flex items-center justify-center">
-                        <span className="text-blue-600 font-medium">{entry.userName.charAt(0)}</span>
+                        <span className="text-blue-600 font-medium">{entry.userName ? entry.userName.charAt(0) : '?'}</span>
                       </div>
                       <div className="ml-4">
-                        <p className="text-sm font-medium text-gray-900">{entry.userName}</p>
+                        <p className="text-sm font-medium text-gray-900">{entry.userName || 'Unknown User'}</p>
                         <p className="text-sm text-gray-500 flex items-center">
                           <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />

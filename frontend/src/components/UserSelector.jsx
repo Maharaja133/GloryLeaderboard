@@ -40,7 +40,7 @@ export default function UserSelector({ selectedUser, setSelectedUser }) {
     if (!newUserName.trim()) return;
 
     try {
-      const baseURL = import.meta.env.VITE_API_URL;
+      const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
       const res = await axios.post(`${baseURL}/api/users`, {
         name: newUserName.trim(),

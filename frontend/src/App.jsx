@@ -8,13 +8,38 @@ import ClaimHistory from './components/ClaimHistory';
 function App() {
   const [selectedUser, setSelectedUser] = useState('');
   const [leaderboard, setLeaderboard] = useState([]);
+  const [history, setHistory] = useState([]);
+  const [isHistoryLoading, setIsHistoryLoading] = useState(true);
 
+  // Fetch Leaderboard
+  const fetchLeaderboard = async () => {
+    try {
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const res = await axios.get(`${API_URL}/api/users/leaderboard`);
+      setLeaderboard(res.data);
+    } catch (err) {
+      console.error('Leaderboard fetch failed:', err);
+    }
+  };
+
+  // Fetch History
+  const fetchHistory = async () => {
+    try {
+      setIsHistoryLoading(true);
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const res = await axios.get(`${API_URL}/api/claim/history`);
+      setHistory(res.data);
+    } catch (err) {
+      console.error('Failed to fetch history:', err);
+    } finally {
+      setIsHistoryLoading(false);
+    }
+  };
+
+  // Run on initial load
   useEffect(() => {
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-
-    axios.get(`${API_URL}/api/users/leaderboard`)
-      .then(res => setLeaderboard(res.data))
-      .catch(err => console.error('Leaderboard fetch failed:', err));
+    fetchLeaderboard();
+    fetchHistory();
   }, []);
 
   return (
@@ -48,7 +73,12 @@ function App() {
                 </svg>
                 Claim Your Points
               </h2>
-              <ClaimButton selectedUser={selectedUser} setLeaderboard={setLeaderboard} />
+              <ClaimButton 
+                selectedUser={selectedUser} 
+                setLeaderboard={setLeaderboard} 
+                refreshHistory={fetchHistory}
+                refreshLeaderboard={fetchLeaderboard}
+              />
             </div>
           </div>
 
@@ -58,7 +88,7 @@ function App() {
             </div>
 
             <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
-              <ClaimHistory />
+              <ClaimHistory history={history} isLoading={isHistoryLoading} />
             </div>
           </div>
         </div>

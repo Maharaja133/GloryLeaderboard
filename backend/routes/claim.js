@@ -6,7 +6,6 @@ const ClaimHistory = require('../models/ClaimHistory');
 router.post('/:userId', async (req, res) => {
   try {
     const { userId } = req.params;
-
     const points = Math.floor(Math.random() * 10) + 1;
 
     const user = await User.findByIdAndUpdate(
@@ -21,19 +20,10 @@ router.post('/:userId', async (req, res) => {
       userId: user._id,
       points,
     });
-
-    const users = await User.find().sort({ totalPoints: -1 });
-    const leaderboard = users.map((u, i) => ({
-      id: u._id,
-      name: u.name,
-      totalPoints: u.totalPoints,
-      rank: i + 1,
-    }));
-
+    
     res.status(200).json({
       message: `${points} points awarded to ${user.name}`,
       awardedPoints: points,
-      leaderboard,
     });
   } catch (err) {
     console.error(err);
@@ -41,15 +31,17 @@ router.post('/:userId', async (req, res) => {
   }
 });
 
+
 router.get('/history', async (req, res) => {
   try {
     const history = await ClaimHistory.find()
       .sort({ claimedAt: -1 })
+      .limit(50)
       .populate('userId', 'name');
 
     const formatted = history.map(entry => ({
       id: entry._id,
-      userName: entry.userId.name,
+      userName: entry.userId ? entry.userId.name : 'Unknown',
       points: entry.points,
       claimedAt: entry.claimedAt,
     }));

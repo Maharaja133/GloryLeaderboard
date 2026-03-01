@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 
-export default function ClaimButton({ selectedUser, setLeaderboard }) {
+export default function ClaimButton({ selectedUser, setLeaderboard, refreshHistory, refreshLeaderboard }) {
   const [isClaiming, setIsClaiming] = useState(false);
 
   const handleClaim = async () => {
@@ -21,11 +21,11 @@ export default function ClaimButton({ selectedUser, setLeaderboard }) {
     setIsClaiming(true);
     try {
       console.log('Attempting to claim points for user:', selectedUser);
-      console.log('API URL:', `${import.meta.env.VITE_API_URL}/api/claim/${selectedUser}`);
       
-        const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      console.log('API URL:', `${API_URL}/api/claim/${selectedUser}`);
 
-        const res = await axios.post(`${API_URL}/api/claim/${selectedUser}`);
+      const res = await axios.post(`${API_URL}/api/claim/${selectedUser}`);
 
       console.log('Claim response:', res.data);
 
@@ -42,9 +42,20 @@ export default function ClaimButton({ selectedUser, setLeaderboard }) {
         draggable: true,
       });
 
-      if (res.data.leaderboard) {
+      // Update Leaderboard depending on your backend setup
+      if (res.data.leaderboard && setLeaderboard) {
+        // Fallback for original backend logic
         setLeaderboard(res.data.leaderboard);
+      } else if (refreshLeaderboard) {
+        // Uses the optimized backend logic to fetch fresh data
+        refreshLeaderboard();
       }
+
+      // Tell App.jsx to refresh the history immediately
+      if (refreshHistory) {
+        refreshHistory();
+      }
+
     } catch (err) {
       console.error('Claim failed:', err);
       let errorMessage = 'Error claiming points. Please try again.';
